@@ -17,4 +17,4 @@
 > If the data doesn't exist it is automatically copied.
 > If the data already exist the source & destination files last modified timestamps are compared.
 > If the the source file has a more recent last modified timestamp .. the destination is updated accordingly.
-> There are also built in srcDoc/destDock  directories that can be utilized by simply hitting enter then providing an absolute path.
+> There are also built in srcDoc/destDock  directories that can be utilized by simply hitting enter than providing an absolute path.
