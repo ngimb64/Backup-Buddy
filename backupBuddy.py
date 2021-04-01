@@ -23,7 +23,7 @@ def dir_handler(dir_path):
     return dir_path if os.path.isdir(dir_path) == True else os.mkdir(dir_path)
 
 def main():
-    reg_path = re.compile(r'^C:(?:\\[A-Za-z0-9_]{1,25})+')
+    reg_path = re.compile(r'^C:(?:\\[a-zA-Z0-9_"\' \.,\-]{1,25})+')
     while True: 
         os.system('cls')
         # Prompt user for destination & source paths for backups #
@@ -57,7 +57,7 @@ def main():
 
     # If recursive copying is selected #
     if prompt == 'r':
-        reg_pathEdge = re.search(r'\\[A-Za-z0-9_]+$', src_path)
+        reg_pathEdge = re.search(r'\\[a-zA-Z0-9_"\' \.,\-]+$', src_path)
         reg_extPath = re.compile(r'(?<={0}).+'.format('\\' + str(reg_pathEdge.group(0))))
         for dirpath, dirnames, filenames in os.walk(src_path): 
             extPath = re.search(reg_extPath, dirpath)
