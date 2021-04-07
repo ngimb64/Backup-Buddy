@@ -20,7 +20,8 @@ def file_handler(src_file, dest_file):
         copy_file(src_file, dest_file)
 
 def dir_handler(dir_path):
-    return dir_path if os.path.isdir(dir_path) == True else os.mkdir(dir_path)
+    if os.path.isdir(dir_path) == False:
+        os.mkdir(dir_path)
 
 def main():
     reg_path = re.compile(r'^C:(?:\\[a-zA-Z0-9_"\' \.,\-]{1,25})+')
