@@ -1,0 +1,8 @@
+# Ignore any files in provided dock folders #
+destDock/*
+!destDock/.keep
+srcDock/*
+!srcDock/.keep
+
+# Ignore personal log file #
+CopyLog.log
