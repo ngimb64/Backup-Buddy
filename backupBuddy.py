@@ -154,51 +154,53 @@ def main(cmd):
 
     # If recursive copying is selected #
     if prompt == 'r':
-        # Grab the last directory in the path #
-        reg_pathEdge = re.search(r'\\[a-zA-Z0-9\_\"\' \.\,\-]+$', src_path)
+        # Grab only the rightmost directory of path save result in other regex 
+        # as anchor point for confirming rescursive directories while crawling #
+        reg_pathEdge = re.search(r'[^\\]+$', src_path)
         # Insert path edge regex match into regex to match any path past the edge anchor point #
-        reg_extPath = re.compile(r'(?<={0}).+'.format('\\' + str(reg_pathEdge.group(0))))
+        reg_extPath = re.compile(r'(?<={0}\\).+$'.format(str(reg_pathEdge.group(0))))
 
         # Recursively walk through the file system of the source path #
         for dirpath, dirnames, filenames in os.walk(src_path):
             # Attempt to match recursive path extending beyond base dir #
-            extPath = re.search(reg_extPath, dirpath)
-            print(f'\nIn path: {dirpath}\n' + (30 * '*') + '\n')
+            match = re.search(reg_extPath, dirpath)
+            # If match is successfull #
+            if match:
+                # save the match as string #
+                recursive_path = str(match.group(0))
+            else:
+                recursive_path = None
+
+            print(f'\nIn path: {dirpath}\n' + ((9 + len(dirpath)) * '*') + '\n')
 
             # Iterate through the directories #
             for dirname in dirnames:
                 # If regex failed (base path passed in) #
-                if not extPath:
-                    DirHandler(dest_path + '\\' + dirname)
+                if not recursive_path:
+                    DirHandler(dest_path+'\\'+dirname)
                 # If the path is part of recursive structure #
                 else:
-                    DirHandler(dest_path + '\\' + str(extPath.group(0)) + '\\' + dirname)
+                    DirHandler(dest_path+'\\'+recursive_path+'\\'+dirname)
 
             # Iterate through files #
             for file in filenames:
                 # If regex failed (base path passed in) #
-                if not extPath:
+                if not recursive_path:
                     # Call function to handle file copying #
-                    FileHandler((dirpath + '\\' + file), (dest_path + '\\' + file))
+                    FileHandler((dirpath+'\\'+file), (dest_path+'\\'+file))
                 # If the path is part of recursive structure #
                 else:
                     # Call function to handle file copying #
-                    FileHandler((dirpath + '\\' + file), (dest_path + '\\' + str(extPath.group(0)) + '\\' + file))
+                    FileHandler((dirpath+'\\'+file), (dest_path+'\\'+recursive_path+'\\'+file))
 
     # If single directory copying is selected #
-    elif prompt == 's':
+    else:
         # If the source path exists #
         if DirCheck(src_path):
             # Iterate through directory source directory #
             for file in os.listdir(src_path):
                 # Call function to handle file copying #
-                FileHandler((src_path + '\\' + file), (dest_path + '\\' + file))
-
-    # Catches any abnormal input #
-    else:
-        PrintErr('Improper control formatting .. exiting', 2)
-        # Exits with error exit code #
-        exit(1)
+                FileHandler((src_path+'\\'+file), (dest_path+'\\'+file))
 
     print('\n\n' + (18 * '*') + ' All finished!!! ' + (50 * '*') + '\n\n')
 
