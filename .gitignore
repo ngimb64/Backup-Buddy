@@ -6,3 +6,6 @@ srcDock/*
 
 # Ignore personal log file #
 CopyLog.log
+
+# Ignore Pycharm files #
+.idea/
