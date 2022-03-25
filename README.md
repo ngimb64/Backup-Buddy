@@ -1,5 +1,5 @@
 # Backup Buddy
-
+![alt text](https://github.com/ngimb64/Backup-Buddy/blob/main/BackupBuddy.png?raw=true)
 
 ## Prereqs
 > This program runs on Windows & Linux, written in Python 3.9
