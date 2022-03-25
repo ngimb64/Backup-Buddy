@@ -12,3 +12,9 @@
 > If the data already exist the source & destination files last modified timestamps are compared.
 > If the source file has a more recent last modified timestamp, the destination is updated accordingly.
 > There are also built in srcDoc/destDock directories that can be utilized by simply hitting enter then providing an absolute path.
+
+## How to use
+- Open up shell such as command prompt or terminal
+- Enter directory containing program and execute in shell
+- Enter the absolute path of the source and destination directories to copy/update data either in a single directory or recursively
+- OR if you would like to exit hit Ctrl + C (KeyboardInterrupt)
