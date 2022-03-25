@@ -240,11 +240,8 @@ if __name__ == '__main__':
     try:
         main()
 
-    # If ctrl + c is detected #
     except KeyboardInterrupt:
         print('\n* Ctrl + C detected .. exiting *')
-
-    # If an unknown exception occurs #
     except Exception as err:
         print('\n* [ERROR] exception occurred .. exiting, check log *')
         logging.exception(f'* Error Occurred: {err} *')
