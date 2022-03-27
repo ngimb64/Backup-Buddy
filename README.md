@@ -16,5 +16,5 @@
 ## How to use
 - Open up shell such as command prompt or terminal
 - Enter directory containing program and execute in shell
-- Enter the absolute path of the source and destination directories to copy/update data either in a single directory or recursively
+- Enter the absolute path of the source & destination directories to copy/update data either in a single directory or recursively
 - OR if you would like to exit hit Ctrl + C (KeyboardInterrupt)
