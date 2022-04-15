@@ -3,7 +3,11 @@
 
 ## Prereqs
 > This program runs on Windows & Linux, written in Python 3.9
-> It uses only built-modules, so it should be ready to run right out of the package.
+
+## Installation
+- Run setup.py <env name> to build virtual environment.
+- Once virtual env is built traverse to the Scripts directory in the environment folder just created.
+- In the Scripts directory, execute the "activate" script to activate the virtual environment.
 
 ## Purpose
 > This shell tool makes keeping an updated backup of different systems a breeze.
