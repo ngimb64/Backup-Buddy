@@ -14,8 +14,7 @@
 - In the Scripts directory, execute the "activate" script to activate the virtual environment.
 
 ## Purpose
-> This shell tool makes keeping an updated backup of different systems a breeze.
-> It takes a source & destination path to then either copy or update data.
+> This tool takes a source & destination path to then either copy or update data.
 > If the data doesn't exist it is automatically copied.
 > If the data already exist the source & destination files last modified timestamps are compared.
 > If the source file has a more recent last modified timestamp, the destination is updated accordingly.

@@ -3,10 +3,11 @@ import logging
 import os
 import re
 import shutil
+import time
 from datetime import datetime
 from shlex import quote
 from sys import stderr
-from time import sleep
+
 
 ##################
 # Function Index #
@@ -20,11 +21,16 @@ from time import sleep
 # main(cmd) - Gathers users input and executes file copy operations based on the source and destination path provided.
 ########################################################################################################################
 
+
 # Globals #
-def TimeCheck(filename): return datetime.fromtimestamp(os.stat(filename).st_mtime)
-def FileCheck(filename): return os.path.isfile(filename)
-def DirCheck(dirname): return os.path.isdir(dirname)
-def AccessCheck(filename): return os.access(filename, os.R_OK)
+# Returns time of last modification #
+def TimeCheck(filename: str) -> int: return datetime.fromtimestamp(os.stat(filename).st_mtime)
+# Check if file exists #
+def FileCheck(filename: str) -> bool: return os.path.isfile(filename)
+# Check if directory exists #
+def DirCheck(dirname: str) -> bool: return os.path.isdir(dirname)
+# Check if file has read access #
+def AccessCheck(filename: str) -> bool: return os.access(filename, os.R_OK)
 
 
 '''
@@ -35,7 +41,7 @@ Params:  The source file to be copied, and the dest file where the source file w
 Returns: None
 ########################################################################################################################
 '''
-def CopyFile(src_file, dest_file):
+def CopyFile(src_file: str, dest_file: str):
     try:
         # Copy file from source to destination #
         shutil.copy(src_file, dest_file)
@@ -55,7 +61,7 @@ Params:  The source file to be copied, and the dest file where the source file w
 Returns: None
 ########################################################################################################################
 '''
-def FileHandler(src_file, dest_file):
+def FileHandler(src_file: str, dest_file: str):
     # If the file exists #
     if FileCheck(dest_file):
         # If the source file has a newer timestamp than the dest file #
@@ -77,7 +83,7 @@ Params:  The path to the directory to check.
 Returns: None
 ########################################################################################################################
 '''
-def DirHandler(dir_path):
+def DirHandler(dir_path: str):
     # If the directory does not exist #
     if not DirCheck(dir_path):
         try:
@@ -98,9 +104,9 @@ Params:  The error message to be printed and the number of seconds it should be 
 Returns: Exits program when Ctrl+C is pressed.
 ########################################################################################################################
 '''
-def PrintErr(msg, seconds):
+def PrintErr(msg: str, seconds: int):
     print(f'\n* [ERROR]: {msg} *\n', file=stderr)
-    sleep(seconds)
+    time.sleep(seconds)
 
 
 '''
@@ -162,7 +168,7 @@ def main():
 
         break
 
-    print('\n\n' + (19 * '*') + ' Starting copy ' + (51 * '*'))
+    print(f'\n\n{19 * "*"} Starting copy {51 * "*"}')
 
     # If recursive copying is selected #
     if prompt == 'r':
@@ -216,7 +222,7 @@ def main():
                     # Call the function to handle file copying #
                     FileHandler(f'{src_path}\\{file}', f'{dest_path}\\{file}')
 
-    print('\n\n' + (18 * '*') + ' All finished!!! ' + (50 * '*') + '\n\n')
+    print(f'\n\n{18 * "*"} All finished!!! {50 * "*"}\n\n')
 
 
 if __name__ == '__main__':
