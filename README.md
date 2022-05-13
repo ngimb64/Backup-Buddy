@@ -10,7 +10,7 @@
 > Example:<br>
 > python3 setup.py "venv name"
 
-- Once virtual env is built traverse to the Scripts directory in the environment folder just created.
+- Once virtual env is built move to the Scripts directory in the environment folder just created.
 - In the Scripts directory, execute the "activate" script to activate the virtual environment.
 
 ## Purpose
@@ -24,4 +24,4 @@
 - Open up shell such as command prompt or terminal
 - Enter directory containing program and execute in shell
 - Enter the absolute path of the source & destination directories to copy/update data either in a single directory or recursively
-- OR if you would like to exit hit Ctrl + C (KeyboardInterrupt)
+- OR if you would like to exit hit Ctrl + C
