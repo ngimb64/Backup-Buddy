@@ -1,17 +1,8 @@
 # Backup Buddy
-![alt text](https://github.com/ngimb64/Backup-Buddy/blob/main/BackupBuddy.png?raw=true)
+![alt text](https://github.com/ngimb64/Backup-Buddy/blob/main/BackupBuddy.gif?raw=true)
 
 ## Prereqs
 > This program runs on Windows & Linux, written in Python 3.9
-
-## Installation
-- Run the setup.py script to build a virtual environment and install all external packages in the created venv.
-
-> Example:<br>
-> python3 setup.py "venv name"
-
-- Once virtual env is built move to the Scripts directory in the environment folder just created.
-- In the Scripts directory, execute the "activate" script to activate the virtual environment.
 
 ## Purpose
 > This tool takes a source & destination path to then either copy or update data.
@@ -19,6 +10,16 @@
 > If the data already exist the source & destination files last modified timestamps are compared.
 > If the source file has a more recent last modified timestamp, the destination is updated accordingly.
 > There are also built in srcDoc/destDock directories that can be utilized by simply hitting enter then providing an absolute path.
+
+## Installation
+- Run the setup.py script to build a virtual environment and install all external packages in the created venv.
+
+> Example:<br>
+> python3 setup.py "venv name"
+
+- Once virtual env is built traverse to the (Scripts-Windows or bin-Linux) directory in the environment folder just created.
+- For Windows in the Scripts directory, for execute the "activate" script to activate the virtual environment.
+- For Linux in the bin directory, run the command `source activate` to activate the virtual environment.
 
 ## How to use
 - Open up shell such as command prompt or terminal

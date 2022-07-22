@@ -3,28 +3,28 @@ import logging
 import os
 import re
 import shutil
+import sys
 import time
 from datetime import datetime
-from shlex import quote
 from sys import stderr
 
 
+"""
 ##################
 # Function Index #
 ########################################################################################################################
-# CopyFile(src_file, dest_file) - Copies file in error validated wrapper.
-# FileHandler(src_file, dest_file) - If file exists check if the source file has a more recent time stamp than the \
-#                                    destination file, if so copy the file. If the file does not exist, simply copy \
-#                                    the file.
-# DirHandler(dir_path) - Confirms the directory of the destination path exists. If not, the directory is created to \
-#                        prevent errors.
-# main(cmd) - Gathers users input and executes file copy operations based on the source and destination path provided.
+CopyFile - Copies file in error validated wrapper.
+FileHandler - If file exists check if the source file has a more recent time stamp than the destination file, if so \
+              copy the file. If the file does not exist, simply copy the file.
+DirHandler - Confirms the directory of the destination path exists. If not, the directory is created to prevent errors.
+PrintErr - Prints time controlled error message.
+main - Gathers users input and executes file copy operations based on the source and destination path provided.
 ########################################################################################################################
+"""
 
 
-# Globals #
 # Returns time of last modification #
-def TimeCheck(filename: str) -> int: return datetime.fromtimestamp(os.stat(filename).st_mtime)
+def TimeCheck(filename: str): return datetime.fromtimestamp(os.stat(filename).st_mtime)
 # Check if file exists #
 def FileCheck(filename: str) -> bool: return os.path.isfile(filename)
 # Check if directory exists #
@@ -33,14 +33,14 @@ def DirCheck(dirname: str) -> bool: return os.path.isdir(dirname)
 def AccessCheck(filename: str) -> bool: return os.access(filename, os.R_OK)
 
 
-'''
+"""
 ########################################################################################################################
 Name:    CopyFile
 Purpose: Copies file in error validated wrapper.
 Params:  The source file to be copied, and the dest file where the source file will be copied to.
-Returns: None
+Returns: Nothing
 ########################################################################################################################
-'''
+"""
 def CopyFile(src_file: str, dest_file: str):
     try:
         # Copy file from source to destination #
@@ -49,18 +49,18 @@ def CopyFile(src_file: str, dest_file: str):
     # Catches input/output error or if the source and dest file are the same #
     except (IOError, shutil.SameFileError) as copy_err:
         if IOError:
-            logging.exception(f'* Error occurred copying file: {copy_err} *\n\n')
+            logging.exception(f'Error occurred copying file: {copy_err}\n\n')
 
 
-'''
+"""
 ########################################################################################################################
 Name:    FileHandler
 Purpose: If file exists check if the source file has a more recent time stamp than the destination file, if so copy \
          the file. If the file does not exist, simply copy the file.
 Params:  The source file to be copied, and the dest file where the source file will be copied to.
-Returns: None
+Returns: Nothing
 ########################################################################################################################
-'''
+"""
 def FileHandler(src_file: str, dest_file: str):
     # If the file exists #
     if FileCheck(dest_file):
@@ -69,20 +69,21 @@ def FileHandler(src_file: str, dest_file: str):
             # Copy the source file to the destination #
             CopyFile(src_file, dest_file)
             print(f'File Updated: {dest_file}')
+    # If the file does not exist #
     else:
         # Copy the source file to the destination #
         CopyFile(src_file, dest_file)
         print(f'File Copied: {dest_file}')
 
 
-'''
+"""
 ########################################################################################################################
 Name:    DirHandler
 Purpose: Confirms the directory of the destination path exists. If not, the directory is created to prevent errors.
 Params:  The path to the directory to check.
-Returns: None
+Returns: Nothing
 ########################################################################################################################
-'''
+"""
 def DirHandler(dir_path: str):
     # If the directory does not exist #
     if not DirCheck(dir_path):
@@ -96,27 +97,27 @@ def DirHandler(dir_path: str):
             pass
 
 
-'''
+"""
 ########################################################################################################################
 Name:    PrintErr
 Purpose: Prints time controlled error message.
 Params:  The error message to be printed and the number of seconds it should be displayed before clearing the screen.
-Returns: Exits program when Ctrl+C is pressed.
+Returns: Nothing
 ########################################################################################################################
-'''
+"""
 def PrintErr(msg: str, seconds: int):
     print(f'\n* [ERROR]: {msg} *\n', file=stderr)
     time.sleep(seconds)
 
 
-'''
+"""
 ########################################################################################################################
 Name:    main
 Purpose: Gathers users input and executes file copy operations based on the source and destination path provided.
-Params:  None
-Returns: None
+Params:  Nothing
+Returns: Nothing
 ########################################################################################################################
-'''
+"""
 def main():
     # Initiate command syntax in immutable tuple #
     cmds = ('cls', 'clear')
@@ -124,25 +125,25 @@ def main():
     # If OS is Windows #
     if os.name == 'nt':
         # Shell-escape command syntax #
-        cmd = quote(cmds[0])
+        cmd = cmds[0]
         # Compile the path matching regex #
-        reg_path = re.compile(r'^[A-Z]:(?:\\[a-zA-Z0-9_"\' .,\-]{1,25})+')
+        reg_path = re.compile(r'[^<>\"/|?*]{1,255}[a-z]$')
     # If OS is Linux #
     else:
         # Shell-escape command syntax #
-        cmd = quote(cmds[1])
+        cmd = cmds[1]
         # Compile the path matching regex #
-        reg_path = re.compile(r'^(?:\\[a-zA-Z0-9_"\' .,\-]{1,25})+')
+        reg_path = re.compile(r'[^\\<>|?*]{1,255}[a-z]$')
 
     while True:
         # Clear the display per iteration #
         os.system(cmd)
 
         # Prompt user for destination & source paths for backups #
-        src_path = input('C:\\enter\\Windows\\path OR \\enter\\Linux\\path OR hit enter to use srcDock:\n')
-        dest_path = input('\nC:\\enter\\Windows\\path OR \\enter\\Linux\\path OR hit enter to use destDock:\n')
+        src_path = input('C:\\enter\\Windows\\path OR /enter/Linux/path OR hit enter to use srcDock:\n')
+        dest_path = input('\nC:\\enter\\Windows\\path OR /enter/Linux/path OR hit enter to use destDock:\n')
 
-        # Validates input to either match the regex or detect enter fo default dir #
+        # Validates input to either match the regex or detect enter to default dir #
         if (not re.search(reg_path, src_path) and src_path != '') or \
         (not re.search(reg_path, dest_path) and dest_path != ''):
             PrintErr('Improper format provided .. try again', 2)
@@ -150,11 +151,11 @@ def main():
 
         # If default source path detected #
         if src_path == '':
-            src_path = '.\\srcDock'
+            src_path = src_dir
 
         # If default destination path detected #
         if dest_path == '':
-            dest_path = '.\\destDock'
+            dest_path = dest_dir
 
         break
 
@@ -174,14 +175,19 @@ def main():
     if prompt == 'r':
         # Grab only the rightmost directory of path save result in other regex 
         # as anchor point for confirming recursive directories while crawling #
-        reg_pathEdge = re.search(r'[^\\]+$', src_path)
-        # Insert path edge regex match into regex to match any path past the edge anchor point #
-        reg_extPath = re.compile(r'(?<={0}\\).+$'.format(str(reg_pathEdge.group(0))))
+        if os.name == 'nt':
+            re_edge_path = re.search(r'[^\\]{1,255}$', src_path)
+            # Insert path edge regex match into regex to match any path past the edge anchor point #
+            re_ext_path = re.compile(r'(?<={0}\\).+$'.format(str(re_edge_path.group(0))))
+        else:
+            re_edge_path = re.search(r'[^/]{1,255}$', src_path)
+            # Insert path edge regex match into regex to match any path past the edge anchor point #
+            re_ext_path = re.compile(r'(?<={0}/).+$'.format(str(re_edge_path.group(0))))
 
         # Recursively walk through the file system of the source path #
         for dir_path, dir_names, file_names in os.walk(src_path):
             # Attempt to match recursive path extending beyond base dir #
-            match = re.search(reg_extPath, dir_path)
+            match = re.search(re_ext_path, dir_path)
             # If match is successful #
             if match:
                 # save the match as string #
@@ -189,65 +195,124 @@ def main():
             else:
                 recursive_path = None
 
-            print(f'\nIn path: {dir_path}\n' + ((9 + len(dir_path)) * '*'))
+            print(f'\nIn path: {dir_path}\n{(9 + len(dir_path)) * "*"}')
 
             # Iterate through the directories #
             for dir_name in dir_names:
                 # If regex failed (base path passed in) #
                 if not recursive_path:
-                    DirHandler(f'{dest_path}\\{dir_name}')
+                    # If the OS is Windows #
+                    if os.name == 'nt':
+                        dir_path = f'{dest_path}\\{dir_name}'
+                    # If the OS is Linux #
+                    else:
+                        dir_path = f'{dest_path}/{dir_name}'
+
+                    # Copy the directory #
+                    DirHandler(dir_path)
+
                 # If the path is part of recursive structure #
                 else:
-                    DirHandler(f'{dest_path}\\{recursive_path}\\{dir_name}')
+                    # If the OS is Windows #
+                    if os.name == 'nt':
+                        dir_path = f'{dest_path}\\{recursive_path}\\{dir_name}'
+                    # If the OS is Linux #
+                    else:
+                        dir_path = f'{dest_path}/{recursive_path}/{dir_name}'
+
+                    # Copy the directory #
+                    DirHandler(dir_path)
 
             # Iterate through files #
             for file in file_names:
                 # If regex failed (base path passed in) #
                 if not recursive_path:
+                    # If the OS is Windows #
+                    if os.name == 'nt':
+                        src_file = f'{dir_path}\\{file}'
+                        dest_file = f'{dest_path}\\{file}'
+                    # If the OS is Linux #
+                    else:
+                        src_file = f'{dir_path}/{file}'
+                        dest_file = f'{dest_path}/{file}'
+
                     # Call the function to handle file copying #
-                    FileHandler(f'{dir_path}\\{file}', f'{dest_path}\\{file}')
+                    FileHandler(src_file, dest_file)
                 # If the path is part of recursive structure #
                 else:
+                    # If the OS is Windows #
+                    if os.name == 'nt':
+                        src_file = f'{dir_path}\\{file}'
+                        dest_file = f'{dest_path}\\{recursive_path}\\{file}'
+                    # If the OS is Linux #
+                    else:
+                        src_file = f'{dir_path}/{file}'
+                        dest_file = f'{dest_path}/{recursive_path}/{file}'
+
                     # Call the function to handle file copying #
-                    FileHandler(f'{dir_path}\\{file}', f'{dest_path}\\{recursive_path}\\{file}')
+                    FileHandler(src_file, dest_file)
 
     # If single directory copying is selected #
     else:
         # If the source path exists #
         if DirCheck(src_path):
             # Iterate through directory source directory #
-            for file in os.listdir(src_path):
+            for file in os.scandir(src_path):
+                # If the OS is Windows #
+                if os.name == 'nt':
+                    src_file = f'{src_path}\\{file.name}'
+                    dest_file = f'{dest_path}\\{file.name}'
+                # If the OS is Linux #
+                else:
+                    src_file = f'{src_path}/{file.name}'
+                    dest_file = f'{dest_path}/{file.name}'
+
                 # If the iteration is not a dir #
-                if not DirCheck(f'{src_path}\\{file}'):
+                if not DirCheck(src_file):
                     # Call the function to handle file copying #
-                    FileHandler(f'{src_path}\\{file}', f'{dest_path}\\{file}')
+                    FileHandler(src_file, dest_file)
 
     print(f'\n\n{18 * "*"} All finished!!! {50 * "*"}\n\n')
 
 
 if __name__ == '__main__':
+    # Get the current working directory #
+    cwd = os.getcwd()
+
+    # If the OS is Windows #
+    if os.name == 'nt':
+        path = f'{cwd}\\'
+    # If the OS is Linux #
+    else:
+        path = f'{cwd}/'
+
     # Set the log file name #
-    logging.basicConfig(level=logging.DEBUG, filename='.\\CopyLog.log')
+    logging.basicConfig(level=logging.DEBUG, filename=f'{path}CopyLog.log')
 
     # Set the included dock paths #
-    src_dir = '.\\srcDock'
-    dest_dir = '.\\destDock'
+    src_dir = f'{path}srcDock'
+    dest_dir = f'{path}destDock'
 
     # If the source dir does not exist #
     if not DirCheck(src_dir):
         # Create the missing dir #
-        os.mkdir('.\\srcDock')
+        os.mkdir(src_dir)
 
     # If the dest dir does not exist #
     if not DirCheck(dest_dir):
         # Create the missing dir #
-        os.mkdir('.\\destDock')
+        os.mkdir(dest_dir)
 
     try:
         main()
 
     except KeyboardInterrupt:
         print('\n* Ctrl + C detected .. exiting *')
+
+    # If unknown exception occurs #
     except Exception as err:
-        print('\n* [ERROR] exception occurred .. exiting, check log *')
-        logging.exception(f'* Error Occurred: {err} *')
+        PrintErr('Unexpected exception occurred .. exiting, check log', 2)
+        logging.exception(f'Unexpected error Occurred: {err}\n\n')
+        sys.exit(1)
+
+    sys.exit(0)

@@ -1,11 +1,14 @@
-# Ignore any files in provided dock folders #
+# Any files in provided dock folders #
 destDock/*
 !destDock/.keep
 srcDock/*
 !srcDock/.keep
 
-# Ignore personal log file #
+# Personal log file #
 CopyLog.log
 
-# Ignore Pycharm files #
+# Pycharm files #
 .idea/
+
+# venv files #
+venv/*
