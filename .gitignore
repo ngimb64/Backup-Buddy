@@ -5,7 +5,7 @@ srcDock/*
 !srcDock/.keep
 
 # Personal log file #
-CopyLog.log
+copy_log.log
 
 # Pycharm files #
 .idea/

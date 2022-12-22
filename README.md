@@ -7,7 +7,7 @@
 &#9745;&#65039; Pylint verified 9.93/10
 
 ## Prereqs
-This program runs on Windows & Linux, written in Python 3.9
+This program runs on Windows 10 & Debian-based Linux, written in Python 3.9 and updated to version 3.10.6
 
 ## Purpose
 This tool takes a source & destination path to then either copy or update data.
@@ -19,11 +19,15 @@ There are also built in srcDoc/destDock directories that can be utilized by simp
 ## Installation
 - Run the setup.py script to build a virtual environment and install all external packages in the created venv.
 
-> Example: `python3 setup.py venv`
+> Examples:<br> 
+>       &emsp;&emsp;- Windows:  `python setup.py venv`<br>
+>       &emsp;&emsp;- Linux:  `python3 setup.py venv`
 
 - Once virtual env is built traverse to the (Scripts-Windows or bin-Linux) directory in the environment folder just created.
-- For Windows in the Scripts directory, for execute the `./activate` script to activate the virtual environment.
-- For Linux in the bin directory, run the command `source activate` to activate the virtual environment.
+- For Windows, in the venv\Scripts directory, execute `activate` or `activate.bat` script to activate the virtual environment.
+- For Linux, in the venv/bin directory, execute `source activate` to activate the virtual environment.
+- If for some reason issues are experienced with the setup script, the alternative is to manually create an environment, activate it, then run pip install -r packages.txt in project root.
+- To exit from the virtual environment when finished, execute `deactivate`.
 
 ## How to use
 - Open up shell such as command prompt or terminal
