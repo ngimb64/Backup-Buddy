@@ -11,14 +11,14 @@ from shlex import quote
 from sys import stderr
 
 
-def time_check(filename: str):
+def time_check(file: Path):
     """
     Returns time of last modification.
 
-    :param filename:  The file name to check time of last modification.
+    :param file:  The path to the file to check time of last modification.
     :return:  Time of last file modification.
     """
-    return datetime.fromtimestamp(os.stat(filename).st_mtime)
+    return datetime.fromtimestamp(file.stat().st_mtime)
 
 
 def copy_file(src_file: Path, dest_file: Path):
@@ -31,7 +31,7 @@ def copy_file(src_file: Path, dest_file: Path):
     """
     try:
         # Copy file from source to destination #
-        shutil.copy(str(src_file.resolve()), str(dest_file.resolve()))
+        shutil.copy(src_file, dest_file)
 
     # If unexpected same file error occurs #
     except shutil.SameFileError:
@@ -47,22 +47,18 @@ def copy_handler(src_file: Path, dest_file: Path):
     :param dest_file:  The dest file where the source file will be copied to.
     :return:  Nothing
     """
-    # Get src/dest paths as strings #
-    str_src_file = str(src_file.resolve())
-    str_dest_file = str(dest_file.resolve())
-
     # If the file exists #
     if dest_file.exists():
         # If the source file has a newer timestamp than the dest file #
-        if time_check(str_src_file) > time_check(str_dest_file):
+        if time_check(src_file) > time_check(dest_file):
             # Copy the source file to the destination #
             copy_file(src_file, dest_file)
-            print(f'File Updated: {str_dest_file}')
+            print(f'File Updated: {dest_file}')
     # If the file does not exist #
     else:
         # Copy the source file to the destination #
         copy_file(src_file, dest_file)
-        print(f'File Copied: {str_dest_file}')
+        print(f'File Copied: {src_file}')
 
 
 def dir_copy(dir_path: Path):
@@ -75,14 +71,9 @@ def dir_copy(dir_path: Path):
     """
     # If the directory does not exist #
     if not dir_path.exists():
-        try:
-            # Create the missing directory #
-            dir_path.mkdir()
-            print(f'Directory Copied: {str(dir_path.resolve())}')
-
-        # If directory already exists #
-        except OSError:
-            pass
+        # Create the missing directory #
+        dir_path.mkdir()
+        print(f'Directory Copied: {dir_path}')
 
 
 def print_err(msg: str, seconds: int):
@@ -156,7 +147,7 @@ def single_mode(src_path: Path, dest_path: Path):
     :return:  Nothing
     """
     # Iterate through directory source directory #
-    for file in os.scandir(str(src_path.resolve())):
+    for file in os.scandir(src_path):
         # Format the paths to src/dest files #
         src_file = src_path / file.name
         dest_file = dest_path / file.name
@@ -218,14 +209,9 @@ def path_input() -> tuple:
                           ' hit enter to use destDock:\n')
 
         # Validates input to either match the regex or detect enter to default dir #
-        if (not re.search(reg_path, src_path) and src_path != '') or \
-        (not re.search(reg_path, dest_path) and dest_path != ''):
+        if (not re.search(reg_path, src_path) and src_path != '') \
+        or (not re.search(reg_path, dest_path) and dest_path != ''):
             print_err('Improper format provided .. try again', 2)
-            continue
-
-        # If the source directory does not exist #
-        if not os.path.isdir(src_path):
-            print_err('source path does not exist, try again', 2)
             continue
 
         # If default source path detected #
@@ -239,6 +225,11 @@ def path_input() -> tuple:
         # Set validated input paths as pathlib objects #
         src_path = Path(src_path)
         dest_path = Path(dest_path)
+
+        # If the source directory does not exist #
+        if not src_path.exists():
+            print_err('source path does not exist, try again', 2)
+            continue
 
         break
 
@@ -264,16 +255,16 @@ def main():
         # Grab only the rightmost directory of path save result in other regex
         # as anchor point for confirming recursive directories while crawling #
         if os.name == 'nt':
-            re_edge_path = re.search(r'[^\\]{1,255}$', str(src_path.resolve()))
+            re_edge_path = re.search(r'[^\\]{1,255}$', str(src_path))
             # Insert path edge regex match into regex to match any path past the edge anchor point #
             re_ext_path = re.compile(rf'(?<={re.escape(str(re_edge_path.group(0)))}\\).+$')
         else:
-            re_edge_path = re.search(r'[^/]{1,255}$', str(src_path.resolve()))
+            re_edge_path = re.search(r'[^/]{1,255}$', str(src_path))
             # Insert path edge regex match into regex to match any path past the edge anchor point #
             re_ext_path = re.compile(rf'(?<={re.escape(str(re_edge_path.group(0)))}/).+$')
 
         # Recursively walk through the file system of the source path #
-        for dir_path, dir_names, file_names in os.walk(str(src_path.resolve())):
+        for dir_path, dir_names, file_names in os.walk(src_path):
             # Attempt to match recursive path extending beyond base dir #
             match = re.search(re_ext_path, dir_path)
             # If match is successful #
@@ -292,7 +283,7 @@ def main():
 
             # Iterate through files #
             for file in file_names:
-                # Call handler function to check if folder needs to be copied #
+                # Call handler function to check if file needs to be copied #
                 file_handler(recursive_path, Path(dir_path), dest_path, file)
 
     # If single directory copying is selected #
@@ -304,16 +295,16 @@ def main():
 
 
 if __name__ == '__main__':
-    ret = 0
+    RET = 0
     # Get the current working directory #
-    path = Path('.')
+    path = Path.cwd()
     # Format program file/dir paths #
     log_file = path / 'copy_log.log'
     src_dir = path / 'srcDock'
     dest_dir = path / 'destDock'
 
     # Set the log file name #
-    logging.basicConfig(filename=str(log_file.resolve()),
+    logging.basicConfig(filename=log_file,
                         format='%(asctime)s line%(lineno)d::%(funcName)s[%(levelname)s]>>'
                         ' %(message)s', datefmt='%Y-%m-%d %H:%M:%S')
 
@@ -338,6 +329,6 @@ if __name__ == '__main__':
     except Exception as err:
         print_err('Unexpected exception occurred .. exiting, check log', None)
         logging.exception('Unexpected error Occurred: %s\n', err)
-        ret = 1
+        RET = 1
 
-    sys.exit(ret)
+    sys.exit(RET)
