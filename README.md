@@ -13,6 +13,12 @@ If the data already exist the source & destination files last modified timestamp
 If the source file has a more recent last modified timestamp, the destination is updated accordingly.<br>
 There are also built in srcDoc/destDock directories that can be utilized by simply hitting enter then providing an absolute path.
 
+### License
+The program is licensed under [GNU Public License v3.0](LICENSE.md)
+
+### Contributions or Issues
+[CONTRIBUTING](CONTRIBUTING.md)
+
 ## Prereqs
 This program runs on Windows 10 & Debian-based Linux, written in Python 3.9 and updated to version 3.10.6
 
